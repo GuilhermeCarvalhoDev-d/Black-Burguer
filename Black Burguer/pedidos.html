@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pedidos - Black Burguer</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+    <header>
+        <div class="nav-container">
+            <div class="logo-text">
+                <a href="index.html"><button id="logoh"><h1>Black Burguer</h1></button></a>
+            </div>
+            <nav>
+                <ul class="nav-menu">
+                    <li class="nav-item"><a href="sistema.html"><button class="nav-btn">Cardápio</button></a></li>
+                    <li class="nav-item"><a href="estoque.html"><button class="nav-btn">Estoque</button></a></li>
+                    <li class="nav-item"><a href="pedidos.html"><button class="nav-btn ativo">Pedidos</button></a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <main class="painel">
+
+        <h1>Pedidos</h1>
+        <p>Cada pedido confirmado no cardápio chega aqui. Cancelar um pedido devolve os itens ao estoque.</p>
+
+        <div class="stats" id="stats"></div>
+
+        <div class="filtros" id="filtros"></div>
+
+        <div id="lista-pedidos"></div>
+
+    </main>
+
+    <footer>
+        <p>Todos os direitos reservados &copy;. Desenvolvido por: Guilherme Magela e Ramon Santos.</p>
+    </footer>
+
+    <script src="dados.js"></script>
+    <script>
+        const $ = id => document.getElementById(id);
+
+        const STATUS = {
+            pendente:  { nome: 'Pendente',          proximo: 'preparo',  botao: 'Iniciar preparo' },
+            preparo:   { nome: 'Em preparo',        proximo: 'entrega',  botao: 'Saiu para entrega' },
+            entrega:   { nome: 'Saiu para entrega', proximo: 'entregue', botao: 'Marcar como entregue' },
+            entregue:  { nome: 'Entregue' },
+            cancelado: { nome: 'Cancelado' }
+        };
+
+        let filtro = 'todos';
+
+        function dataBR(iso) {
+            return new Date(iso).toLocaleString('pt-BR', { dateStyle: 'short', timeStyle: 'short' });
+        }
+
+        function render() {
+            const todos = BB.pedidos().slice().reverse();
+
+            const abertos = todos.filter(p => ['pendente', 'preparo', 'entrega'].includes(p.status)).length;
+            const faturado = todos.filter(p => p.status !== 'cancelado').reduce((t, p) => t + p.total, 0);
+
+            $('stats').innerHTML = [
+                [todos.length, 'Pedidos'],
+                [abertos, 'Em andamento'],
+                [BB.moeda(faturado), 'Faturamento (sem cancelados)']
+            ].map(s => `<div class="stat"><strong>${s[0]}</strong><span>${s[1]}</span></div>`).join('');
+
+            const opcoes = [['todos', 'Todos']].concat(Object.keys(STATUS).map(k => [k, STATUS[k].nome]));
+
+            $('filtros').innerHTML = opcoes.map(([chave, nome]) => {
+                const qtd = chave === 'todos' ? todos.length : todos.filter(p => p.status === chave).length;
+                return `<button class="filtro ${filtro === chave ? 'ativo' : ''}" data-filtro="${chave}">${nome} (${qtd})</button>`;
+            }).join('');
+
+            const visiveis = filtro === 'todos' ? todos : todos.filter(p => p.status === filtro);
+
+            if (!visiveis.length) {
+                $('lista-pedidos').innerHTML = todos.length
+                    ? '<div class="caixa vazio">Nenhum pedido com esse status.</div>'
+                    : '<div class="caixa vazio">Nenhum pedido ainda. Faça um pedido pelo <a href="sistema.html">cardápio</a> e ele aparecerá aqui.</div>';
+                return;
+            }
+
+            $('lista-pedidos').innerHTML = visiveis.map(p => {
+                const st = STATUS[p.status];
+                const encerrado = p.status === 'entregue' || p.status === 'cancelado';
+
+                return `<article class="pedido">
+                    <div class="pedido-topo">
+                        <h3>Pedido nº ${p.numero}</h3>
+                        <span class="selo st-${p.status}">${st.nome}</span>
+                    </div>
+                    <p class="pedido-info">${dataBR(p.data)} &bull; ${BB.esc(p.cliente)}</p>
+                    <ul class="pedido-itens">
+                        ${p.itens.map(i => `<li><span>${i.qtd}x ${BB.esc(i.nome)}</span><span>${BB.moeda(i.preco * i.qtd)}</span></li>`).join('')}
+                    </ul>
+                    <p class="pedido-info"><strong>Endereço:</strong> ${BB.esc(p.endereco)}</p>
+                    <p class="pedido-info"><strong>Pagamento:</strong> ${BB.esc(p.pagamento)}</p>
+                    <div class="pedido-rodape">
+                        <strong class="pedido-total">${BB.moeda(p.total)}</strong>
+                        ${encerrado ? '' : `<div class="pedido-acoes">
+                            <button class="btn-mini" data-acao="avancar" data-num="${p.numero}" data-prox="${st.proximo}">${st.botao}</button>
+                            <button class="btn-mini perigo" data-acao="cancelar" data-num="${p.numero}">Cancelar pedido</button>
+                        </div>`}
+                    </div>
+                </article>`;
+            }).join('');
+        }
+
+        $('filtros').addEventListener('click', e => {
+            const btn = e.target.closest('[data-filtro]');
+            if (!btn) return;
+            filtro = btn.dataset.filtro;
+            render();
+        });
+
+        $('lista-pedidos').addEventListener('click', e => {
+            const btn = e.target.closest('button[data-acao]');
+            if (!btn) return;
+
+            const numero = parseInt(btn.dataset.num, 10);
+
+            if (btn.dataset.acao === 'avancar') {
+                BB.mudarStatus(numero, btn.dataset.prox);
+            }
+
+            if (btn.dataset.acao === 'cancelar') {
+                if (!confirm('Cancelar o pedido nº ' + numero + '? Os itens voltam ao estoque.')) return;
+                BB.mudarStatus(numero, 'cancelado');
+            }
+
+            render();
+        });
+
+        /* atualiza quando chega um pedido novo em outra aba */
+        window.addEventListener('storage', render);
+
+        render();
+    </script>
+
+</body>
+
+</html>

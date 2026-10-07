@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - BlackBurguer</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <header>
+        <div class="nav-container">
+            <div class="logo-text"><a href="#top"><button id="logoh"><h1>Black Burguer</h1></button></a></div>
+            <nav>
+                <ul class="nav-menu">
+                    <li class="nav-item"><a href="index.html" ><button id="btn-inicio">Início</button></a></li>
+                    <li class="nav-item"><a href="login.html" ><button id="btn-login">Login</button></a></li>
+                    <li class="nav-item has-submenu">
+                        <a href="#" ><button id="btn-sobre">Sobre</button></a>
+                        <ul id="menu-vertical-sobre">
+                            <li><a href="#">Empresa</a></li>
+                            <li><a href="#">Clientes</a></li>
+                        </ul>
+                    </li>
+                    <li class="nav-item has-submenu">
+                        <a href="#" ><button id="btn-contato">Contato</button></a>
+                        <ul id="menu-vertical-contato">
+                            <li><a href="#">Telefones</a></li>
+                            <li><a href="#">Email</a></li>
+                        </ul>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <main>
+        <div class="card-container">
+            <h1>Login do Cliente</h1>
+            <p>Entre com seu e-mail e senha para acessar o cardápio.</p>
+
+            <form id="form-login">
+                <div class="form-group">
+                    <label for="login-email">E-mail:</label>
+                    <input type="email" id="login-email" required placeholder="seuemail@email.com">
+                </div>
+                <div class="form-group">
+                    <label for="login-senha">Senha:</label>
+                    <input type="password" id="login-senha" required placeholder="Sua senha">
+                </div>
+                <button type="submit" class="btn-padrao">Entrar</button>
+            </form>
+        </div>
+    </main>
+
+    <footer>
+        
+        <p id="direitos-autorais">Todos os direitos reservados &copy;. Desenvolvido por: Guilherme Magela e Ramon Santos.</p>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>

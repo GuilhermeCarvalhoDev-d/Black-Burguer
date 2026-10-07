@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Estoque - Black Burguer</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+    <header>
+        <div class="nav-container">
+            <div class="logo-text">
+                <a href="index.html"><button id="logoh"><h1>Black Burguer</h1></button></a>
+            </div>
+            <nav>
+                <ul class="nav-menu">
+                    <li class="nav-item"><a href="sistema.html"><button class="nav-btn">Cardápio</button></a></li>
+                    <li class="nav-item"><a href="estoque.html"><button class="nav-btn ativo">Estoque</button></a></li>
+                    <li class="nav-item"><a href="pedidos.html"><button class="nav-btn">Pedidos</button></a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <main class="painel">
+    <h1>Controle de Estoque</h1>
+    <p>Os produtos cadastrados aqui aparecem no cardápio do sistema e perdem unidades a cada pedido confirmado.</p>
+
+    <div class="stats" id="stats"></div>
+
+    <section class="caixa">
+        <h2 id="form-titulo">Novo produto</h2>
+
+        <form id="form-produto" class="grade-form">
+            <input type="hidden" id="prod-id">
+
+            <div class="form-group">
+                <label for="prod-nome">Nome</label>
+                <input type="text" id="prod-nome" required>
+            </div>
+
+            <div class="form-group">
+                <label for="prod-preco">Preço (R$)</label>
+                <input type="number" id="prod-preco" min="0.01" step="0.01" required>
+            </div>
+
+            <div class="form-group">
+                <label for="prod-qtd">Quantidade em estoque</label>
+                <input type="number" id="prod-qtd" min="0" step="1" required>
+            </div>
+
+            <div class="form-group">
+                <label for="prod-min">Avisar quando restar até</label>
+                <input type="number" id="prod-min" min="0" step="1" value="5" required>
+            </div>
+
+            <!-- NOVO CAMPO: URL da Imagem -->
+            <div class="form-group span-2">
+                <label for="prod-imagem">URL da Imagem (Link da imagem do lanche)</label>
+                <input type="url" id="prod-imagem" placeholder="https://exemplo.com/hamburguer.jpg" required>
+            </div>
+
+            <div class="form-group span-2">
+                <label for="prod-desc">Descrição (aparece no cardápio)</label>
+                <input type="text" id="prod-desc" required>
+            </div>
+
+            <div class="form-acoes span-2">
+                <button type="submit" class="btn-padrao" id="btn-salvar">Adicionar produto</button>
+                <button type="button" class="btn-padrao btn-secundario" id="btn-cancelar" hidden>Cancelar edição</button>
+            </div>
+        </form>
+    </section>
+
+    <section class="caixa">
+        <h2>Produtos</h2>
+        <div class="tabela-wrap">
+            <table class="tabela">
+                <thead>
+                    <tr>
+                        <th>Foto</th> <!-- NOVA COLUNA DA TABELA -->
+                        <th>Produto</th>
+                        <th>Preço</th>
+                        <th>Quantidade</th>
+                        <th>Situação</th>
+                        <th>Ações</th>
+                    </tr>
+                </thead>
+                <tbody id="tabela-estoque"></tbody>
+            </table>
+        </div>
+    </section>
+</main>
+
+    <footer>
+        <p>Todos os direitos reservados &copy;. Desenvolvido por: Guilherme Magela e Ramon Santos.</p>
+    </footer>
+
+    <script src="dados.js"></script>
+    <script>
+        const $ = id => document.getElementById(id);
+
+        function situacao(p) {
+            if (p.qtd <= 0) return ['Esgotado', 'zerado'];
+            if (p.qtd <= p.minimo) return ['Estoque baixo', 'baixo'];
+            return ['Em estoque', 'ok'];
+        }
+
+        function render() {
+            const lista = BB.produtos();
+
+            const unidades = lista.reduce((t, p) => t + p.qtd, 0);
+            const valor = lista.reduce((t, p) => t + p.qtd * p.preco, 0);
+            const baixos = lista.filter(p => p.qtd > 0 && p.qtd <= p.minimo).length;
+            const zerados = lista.filter(p => p.qtd <= 0).length;
+
+            $('stats').innerHTML = [
+                [lista.length, 'Produtos'],
+                [unidades, 'Unidades em estoque'],
+                [BB.moeda(valor), 'Valor em estoque'],
+                [baixos, 'Com estoque baixo'],
+                [zerados, 'Esgotados']
+            ].map(s => `<div class="stat"><strong>${s[0]}</strong><span>${s[1]}</span></div>`).join('');
+
+            $('tabela-estoque').innerHTML = lista.map(p => {
+                const [texto, classe] = situacao(p);
+                return `<tr>
+                    <td><strong>${BB.esc(p.nome)}</strong><br><small>${BB.esc(p.descricao)}</small></td>
+                    <td>${BB.moeda(p.preco)}</td>
+                    <td>
+                        <div class="qtd-ctrl">
+                            <button data-acao="menos" data-id="${p.id}" ${p.qtd <= 0 ? 'disabled' : ''} aria-label="Remover 1 unidade">−</button>
+                            <strong>${p.qtd}</strong>
+                            <button data-acao="mais" data-id="${p.id}" aria-label="Adicionar 1 unidade">+</button>
+                        </div>
+                    </td>
+                    <td><span class="selo ${classe}">${texto}</span></td>
+                    <td>
+                        <button class="btn-mini" data-acao="editar" data-id="${p.id}">Editar</button>
+                        <button class="btn-mini perigo" data-acao="excluir" data-id="${p.id}">Excluir</button>
+                    </td>
+                </tr>`;
+            }).join('') || '<tr><td colspan="5" class="vazio">Nenhum produto cadastrado. Use o formulário acima.</td></tr>';
+        }
+
+        function limparForm() {
+            $('form-produto').reset();
+            $('prod-id').value = '';
+            $('prod-min').value = 5;
+            $('form-titulo').textContent = 'Novo produto';
+            $('btn-salvar').textContent = 'Adicionar produto';
+            $('btn-cancelar').hidden = true;
+        }
+
+        $('form-produto').addEventListener('submit', e => {
+            e.preventDefault();
+
+            const lista = BB.produtos();
+            const id = $('prod-id').value;
+
+            const dados = {
+                nome: $('prod-nome').value.trim(),
+                preco: parseFloat($('prod-preco').value),
+                qtd: parseInt($('prod-qtd').value, 10),
+                minimo: parseInt($('prod-min').value, 10),
+                descricao: $('prod-desc').value.trim()
+            };
+
+            if (id) {
+                Object.assign(lista.find(p => p.id === id), dados);
+            } else {
+                lista.push({ id: 'p' + Date.now(), ...dados });
+            }
+
+            BB.salvarProdutos(lista);
+            limparForm();
+            render();
+        });
+
+        $('btn-cancelar').addEventListener('click', limparForm);
+
+        $('tabela-estoque').addEventListener('click', e => {
+            const btn = e.target.closest('button[data-acao]');
+            if (!btn) return;
+
+            const lista = BB.produtos();
+            const produto = lista.find(p => p.id === btn.dataset.id);
+            if (!produto) return;
+
+            const acao = btn.dataset.acao;
+
+            if (acao === 'mais') produto.qtd++;
+            if (acao === 'menos' && produto.qtd > 0) produto.qtd--;
+
+            if (acao === 'editar') {
+                $('prod-id').value = produto.id;
+                $('prod-nome').value = produto.nome;
+                $('prod-preco').value = produto.preco;
+                $('prod-qtd').value = produto.qtd;
+                $('prod-min').value = produto.minimo;
+                $('prod-desc').value = produto.descricao;
+                $('form-titulo').textContent = 'Editar produto';
+                $('btn-salvar').textContent = 'Salvar alterações';
+                $('btn-cancelar').hidden = false;
+                $('form-produto').scrollIntoView({ behavior: 'smooth' });
+                return;
+            }
+
+            if (acao === 'excluir') {
+                if (!confirm('Excluir "' + produto.nome + '"? Ele sairá do cardápio.')) return;
+                lista.splice(lista.indexOf(produto), 1);
+            }
+
+            BB.salvarProdutos(lista);
+            render();
+        });
+
+        /* atualiza quando um pedido é feito em outra aba */
+        window.addEventListener('storage', render);
+
+        render();
+    </script>
+
+</body>
+
+</html>

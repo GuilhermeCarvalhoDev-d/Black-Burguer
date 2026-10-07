@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Cadastro - BlackBurguer</title>
+
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+    <!-- CABEÇALHO -->
+    <header>
+
+        <div class="nav-container">
+
+            <!-- LOGO -->
+            <div class="logo-text">
+
+                <a href="index.html">
+
+                    <button id="logoh">
+                        <h1>Black Burguer</h1>
+                    </button>
+
+                </a>
+
+            </div>
+
+
+            <!-- MENU -->
+            <nav>
+
+                <ul class="nav-menu">
+
+                    <!-- INÍCIO -->
+                    <li class="nav-item">
+
+                        <a href="index.html">
+
+                            <button id="btn-inicio">
+                                Início
+                            </button>
+
+                        </a>
+
+                    </li>
+
+
+                    <!-- LOGIN -->
+                    <li class="nav-item">
+
+                        <a href="login.html">
+
+                            <button id="btn-login">
+                                Login
+                            </button>
+
+                        </a>
+
+                    </li>
+
+
+                    <!-- SOBRE -->
+                    <li class="nav-item has-submenu">
+
+                        <a href="#">
+
+                            <button id="btn-sobre">
+                                Sobre
+                            </button>
+
+                        </a>
+
+
+                        <ul id="menu-vertical-sobre">
+
+                            <li>
+
+                                <a href="#"
+                                   class="info-menu"
+                                   data-mensagem="🍔 A Black Burguer é uma hamburgueria especializada em hambúrgueres artesanais.">
+
+                                    Empresa
+
+                                </a>
+
+                            </li>
+
+
+                            <li>
+
+                                <a href="#"
+                                   class="info-menu"
+                                   data-mensagem="⭐ Nossos clientes são nossa prioridade! Trabalhamos para oferecer os melhores hambúrgueres.">
+
+                                    Clientes
+
+                                </a>
+
+                            </li>
+
+                        </ul>
+
+                    </li>
+
+
+                    <!-- CONTATO -->
+                    <li class="nav-item has-submenu">
+
+                        <a href="#">
+
+                            <button id="btn-contato">
+                                Contato
+                            </button>
+
+                        </a>
+
+
+                        <ul id="menu-vertical-contato">
+
+                            <!-- TELEFONE -->
+                            <li>
+
+                                <a href="#"
+                                   class="info-menu"
+                                   data-mensagem="📞 Telefone: (32) 9922-8574">
+
+                                    Telefones
+
+                                </a>
+
+                            </li>
+
+
+                            <!-- EMAIL -->
+                            <li>
+
+                                <a href="#"
+                                   class="info-menu"
+                                   data-mensagem="✉️ E-mail: BlackBurguer@gmail.com">
+
+                                    Email
+
+                                </a>
+
+                            </li>
+
+                        </ul>
+
+                    </li>
+
+                </ul>
+
+            </nav>
+
+        </div>
+
+    </header>
+
+
+    <!-- CAIXINHA DE INFORMAÇÕES -->
+    <div id="caixa-info"></div>
+
+
+    <!-- CONTEÚDO PRINCIPAL -->
+    <main>
+
+        <div class="card-container">
+
+            <h1>
+                Cadastro de Cliente
+            </h1>
+
+
+            <p>
+                Crie sua conta para pedir os melhores burgers da cidade.
+            </p>
+
+
+            <!-- FORMULÁRIO -->
+            <form id="form-cadastro">
+
+
+                <!-- NOME -->
+                <div class="form-group">
+
+                    <label for="cad-nome">
+                        Nome Completo:
+                    </label>
+
+                    <input
+                        type="text"
+                        id="cad-nome"
+                        required
+                        placeholder="Digite seu nome">
+
+                </div>
+
+
+                <!-- CPF -->
+                <div class="form-group">
+
+                    <label for="cad-cpf">
+                        CPF:
+                    </label>
+
+                    <input
+                        type="text"
+                        id="cad-cpf"
+                        required
+                        maxlength="14"
+                        inputmode="numeric"
+                        placeholder="000.000.000-00">
+
+                </div>
+
+
+                <!-- ENDEREÇO -->
+                <div class="form-group">
+
+                    <label for="cad-endereco">
+                        Endereço:
+                    </label>
+
+                    <input
+                        type="text"
+                        id="cad-endereco"
+                        required
+                        placeholder="Digite seu endereço">
+
+                </div>
+
+
+                <!-- EMAIL -->
+                <div class="form-group">
+
+                    <label for="cad-email">
+                        E-mail:
+                    </label>
+
+                    <input
+                        type="email"
+                        id="cad-email"
+                        required
+                        placeholder="BlackBurguer@gmail.com">
+
+                </div>
+
+
+                <!-- SENHA -->
+                <div class="form-group">
+
+                    <label for="cad-senha">
+                        Senha:
+                    </label>
+
+                    <input
+                        type="password"
+                        id="cad-senha"
+                        required
+                        placeholder="Crie uma senha">
+
+                </div>
+
+
+                <!-- BOTÃO -->
+                <button
+                    type="submit"
+                    class="btn-padrao">
+
+                    Cadastrar
+
+                </button>
+
+            </form>
+
+        </div>
+
+    </main>
+
+
+    <!-- RODAPÉ -->
+    <footer>
+
+        <p id="direitos-autorais">
+
+            Todos os direitos reservados &copy;.
+            Desenvolvido por: Guilherme Magela e Ramon Santos.
+
+        </p>
+
+    </footer>
+
+
+    <!-- JAVASCRIPT -->
+    <script src="script.js"></script>
+
+</body>
+
+</html>

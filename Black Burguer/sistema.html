@@ -1,0 +1,509 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Cardápio - Black Burguer</title>
+
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+    <!-- ==========================================
+         HEADER
+         ========================================== -->
+
+    <header>
+    <div class="nav-container">
+        <div class="logo-text">
+            <a href="index.html">
+                <button id="logoh">
+                    <h1>Black Burguer</h1>
+                </button>
+            </a>
+        </div>
+
+        <nav>
+            <ul class="nav-menu">
+                <li class="nav-item">
+                    <a href="index.html">
+                        <button id="btn-inicio">Início</button>
+                    </a>
+                </li>
+
+                <li class="nav-item">
+                    <a href="login.html">
+                        <button id="btn-login">Login</button>
+                    </a>
+                </li>
+
+                <!-- BOTÕES RESTRITOS -->
+                <li class="nav-item admin-only">
+                    <a href="estoque.html">
+                        <button class="nav-btn">Estoque</button>
+                    </a>
+                </li>
+
+                <li class="nav-item admin-only">
+                    <a href="pedidos.html">
+                        <button class="nav-btn">Pedidos</button>
+                    </a>
+                </li>
+
+                <!-- SOBRE -->
+                <li class="nav-item has-submenu">
+                    <a href="#">
+                        <button id="btn-sobre">Sobre</button>
+                    </a>
+
+                    <ul id="menu-vertical-sobre">
+                        <li>
+                            <a href="#" class="info-menu" data-mensagem="🍔 A Black Burguer é uma hamburgueria especializada em hambúrgueres artesanais.">
+                                Empresa
+                            </a>
+                        </li>
+                        <li>
+                            <a href="#" class="info-menu" data-mensagem="⭐ Nossos clientes são nossa prioridade! Trabalhamos para oferecer os melhores hambúrgueres.">
+                                Clientes
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+
+                <!-- CONTATO -->
+                <li class="nav-item has-submenu">
+                    <a href="#">
+                        <button id="btn-contato">Contato</button>
+                    </a>
+
+                    <ul id="menu-vertical-contato">
+                        <li>
+                            <a href="#" class="info-menu" data-mensagem="📞 Telefone: (32) 9922-8574">
+                                Telefones
+                            </a>
+                        </li>
+                        <li>
+                            <a href="#" class="info-menu" data-mensagem="📧 E-mail: BlackBurguer@gmail.com">
+                                Email
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+            </ul>
+        </nav>
+    </div>
+</header>
+
+
+    <!-- CAIXA DE INFORMAÇÃO -->
+
+    <div id="caixa-info"></div>
+
+
+    <!-- ==========================================
+         CONTEÚDO PRINCIPAL
+         ========================================== -->
+
+    <main>
+
+        <h1>
+            Cardápio de Hambúrgueres
+        </h1>
+
+
+        <p>
+            Escolha seus hambúrgueres preferidos
+            e informe o endereço para entrega.
+        </p>
+
+
+        <!-- ======================================
+             CARDÁPIO
+             ====================================== -->
+
+        <div class="menu-grid" id="menu-grid"></div>
+
+
+
+        <!-- ======================================
+             CARRINHO
+             ====================================== -->
+
+        <div class="cart-section">
+
+            <h2>
+                Seu Carrinho
+            </h2>
+
+
+            <ul id="cart-list"></ul>
+
+
+            <p class="cart-total-text">
+
+                <strong>
+
+                    Total: R$
+
+                    <span id="cart-total">
+                        0,00
+                    </span>
+
+                </strong>
+
+            </p>
+
+
+            <form
+                id="form-pedido"
+                class="form-pedido">
+
+
+                <div class="form-group">
+
+                    <label for="endereco-entrega">
+
+                        Endereço Completo para Entrega:
+
+                    </label>
+
+
+                    <input
+                        type="text"
+                        id="endereco-entrega"
+                        placeholder="Rua, número, complemento e bairro"
+                        required>
+
+                </div>
+
+
+                <button
+                    type="submit"
+                    class="btn-padrao">
+
+                    Finalizar Pedido
+
+                </button>
+
+            </form>
+
+        </div>
+
+    </main>
+
+
+    <!-- ==========================================
+         MODAL DE PAGAMENTO
+         ========================================== -->
+
+    <div
+        id="modal-pedido"
+        class="modal-pedido">
+
+
+        <div class="modal-conteudo">
+
+
+            <!-- CABEÇALHO -->
+
+            <div class="modal-header">
+
+                <h2>
+                    Finalizar Pedido
+                </h2>
+
+
+                <button
+                    type="button"
+                    id="fechar-modal"
+                    class="btn-fechar">
+
+                    &times;
+
+                </button>
+
+            </div>
+
+
+            <!-- RESUMO -->
+
+            <div class="resumo-pedido">
+
+                <h3>
+                    🧾 Resumo do Pedido
+                </h3>
+
+
+                <div id="resumo-itens">
+
+                </div>
+
+
+                <div class="resumo-total">
+
+                    Total:
+
+                    <strong>
+                        R$ <span id="resumo-total">
+                            0,00
+                        </span>
+                    </strong>
+
+                </div>
+
+
+                <div class="resumo-endereco">
+
+                    <strong>
+                        📍 Endereço:
+                    </strong>
+
+                    <span id="resumo-endereco">
+                    </span>
+
+                </div>
+
+            </div>
+
+
+            <!-- PAGAMENTO -->
+
+            <div class="pagamento">
+
+                <h3>
+                    💳 Forma de Pagamento
+                </h3>
+
+
+                <select id="forma-pagamento">
+
+                    <option value="">
+                        Selecione uma forma de pagamento
+                    </option>
+
+                    <option value="pix">
+                        PIX
+                    </option>
+
+                    <option value="debito">
+                        Cartão de Débito
+                    </option>
+
+                    <option value="credito">
+                        Cartão de Crédito
+                    </option>
+
+                    <option value="dinheiro">
+                        Dinheiro
+                    </option>
+
+                </select>
+
+            </div>
+
+
+            <!-- PIX -->
+
+            <div
+                id="area-pix"
+                class="area-pagamento">
+
+
+                <h3>
+                    📱 Pagamento via PIX
+                </h3>
+
+
+                <p>
+                    Escaneie o QR Code abaixo
+                    para realizar o pagamento.
+                </p>
+
+
+                <div id="qrcode">
+
+                </div>
+
+
+                <p class="aviso-pix">
+
+                    ⚠️ Este QR Code é demonstrativo
+                    para o projeto.
+
+                </p>
+
+            </div>
+
+
+            <!-- CARTÃO -->
+
+            <div
+                id="area-cartao"
+                class="area-pagamento">
+
+
+                <h3>
+                    💳 Dados do Cartão
+                </h3>
+
+
+                <div class="form-group">
+
+                    <label for="numero-cartao">
+                        Número do cartão
+                    </label>
+
+                    <input
+                        type="text"
+                        id="numero-cartao"
+                        placeholder="0000 0000 0000 0000"
+                        maxlength="19">
+
+                </div>
+
+
+                <div class="cartao-linha">
+
+                    <div class="form-group">
+
+                        <label for="validade-cartao">
+                            Validade
+                        </label>
+
+                        <input
+                            type="text"
+                            id="validade-cartao"
+                            placeholder="MM/AA"
+                            maxlength="5">
+
+                    </div>
+
+
+                    <div class="form-group">
+
+                        <label for="cvv-cartao">
+                            CVV
+                        </label>
+
+                        <input
+                            type="password"
+                            id="cvv-cartao"
+                            placeholder="123"
+                            maxlength="4">
+
+                    </div>
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label for="nome-cartao">
+                        Nome no cartão
+                    </label>
+
+                    <input
+                        type="text"
+                        id="nome-cartao"
+                        placeholder="Nome do titular">
+
+                </div>
+
+            </div>
+
+
+            <!-- DINHEIRO -->
+
+            <div
+                id="area-dinheiro"
+                class="area-pagamento">
+
+
+                <h3>
+                    💵 Pagamento em Dinheiro
+                </h3>
+
+
+                <div class="form-group">
+
+                    <label for="valor-dinheiro">
+
+                        Valor entregue pelo cliente:
+
+                    </label>
+
+
+                    <input
+                        type="number"
+                        id="valor-dinheiro"
+                        placeholder="Ex: 50.00"
+                        min="0"
+                        step="0.01">
+
+                </div>
+
+
+                <div class="troco">
+
+                    Troco:
+
+                    <strong>
+                        R$ <span id="valor-troco">
+                            0,00
+                        </span>
+                    </strong>
+
+                </div>
+
+            </div>
+
+
+            <!-- CONFIRMAR -->
+
+            <button
+                type="button"
+                id="confirmar-pedido"
+                class="btn-padrao btn-confirmar">
+
+                Confirmar Pedido
+
+            </button>
+
+        </div>
+
+    </div>
+
+
+    <!-- FOOTER -->
+
+    <footer>
+
+        <p>
+
+            Todos os direitos reservados &copy;.
+            Desenvolvido por:
+            Guilherme Magela e Ramon Santos.
+
+        </p>
+
+    </footer>
+
+
+    <!-- BIBLIOTECA PARA QR CODE -->
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js">
+    </script>
+
+
+    <!-- JAVASCRIPT DO SITE -->
+    <script src="dados.js"></script>
+
+
+    <script src="script.js"></script>
+
+</body>
+
+</html>
